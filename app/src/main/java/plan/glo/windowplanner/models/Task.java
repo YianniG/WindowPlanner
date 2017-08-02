@@ -1,8 +1,36 @@
 package plan.glo.windowplanner.models;
+import java.util.Date;
+import java.util.List;
 
-/**
- * Created by zubairchowdhury on 02/08/2017.
- */
+public class Task implements TaskI{
 
-public class Task {
+   private List<Job> jobs;
+   private Date startDate;
+   private Date endDate;
+   private String name;
+
+   @Override
+   public String getTaskName() {
+      return null;
+   }
+
+   @Override
+   public Date getTaskEndDate() {
+      return null;
+   }
+
+   @Override
+   public Date getTaskStartDate() {
+      return null;
+   }
+
+   @Override
+   public int getJobs() {
+      return 0;
+   }
+
+   @Override
+   public void modifyTask(Task configObject) {
+
+   }
 }
