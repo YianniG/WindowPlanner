@@ -30,6 +30,34 @@ public class Scheduler implements SchedulerI {
             fillInBlock(startIndex, endIndex, e);
         }
 
+        Collections.sort(tasks, new Comparator<TaskI>() {
+            @Override
+            public int compare(TaskI t1, TaskI t2) {
+                return t1.getTaskEndDate().compareTo(t2.getTaskEndDate());
+            }
+        });
+
+        List<JobI> allJobs = new ArrayList<>();
+
+        for (TaskI t: tasks) {
+            List<JobI> taskJobs = t.getJobs();
+        }
+
+
+
+        for (int i = 0; i < timeArray.length; i++) {
+            //Skip blocks that aren't empty
+            if (timeArray[i] != 0) continue;
+
+            //Find tasks that include the block
+            List<TaskI> includesTheBlock = getTasksThatIncludeTheBlock(i, tasks);
+
+            //Of those tasks, choose the one with the earliest deadline
+            TaskI taskWithEarliestDealine = getEarliestDeadline(includesTheBlock);
+
+            //Assign job to this block
+
+        }
         return null;
     }
 
