@@ -1,15 +1,13 @@
 package plan.glo.windowplanner.models;
 
 import java.util.Date;
-
-/**
- * Created by zubairchowdhury on 02/08/2017.
- */
+import java.util.List;
 
 public interface TaskI {
+    int getId();
     String getTaskName();
     Date getTaskEndDate();
     Date getTaskStartDate();
-    int getJobs();
+    List<JobI> getJobs();
     void modifyTask(Task configObject);
 }
