@@ -10,6 +10,11 @@ public class Task implements TaskI{
    private String name;
 
    @Override
+   public int getId() {
+      return 0;
+   }
+
+   @Override
    public String getTaskName() {
       return null;
    }
@@ -25,8 +30,8 @@ public class Task implements TaskI{
    }
 
    @Override
-   public int getJobs() {
-      return 0;
+   public List<JobI> getJobs() {
+      return null;
    }
 
    @Override
