@@ -8,9 +8,7 @@ import java.util.Date;
 
 public interface EventI {
 
-    void modifyEvent(Event event);
     Date getEventStartTime();
-    String getEventName();
     Date getEventEndTime();
     int getTaskId();
 }
