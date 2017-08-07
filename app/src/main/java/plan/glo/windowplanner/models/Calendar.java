@@ -9,14 +9,14 @@ import java.util.List;
 
 public class Calendar implements CalendarI {
 
-    private List<Event> calendarEvents;
+    private List<EventI> calendarEvents;
 
     public Calendar() {
         this.calendarEvents = new ArrayList<>();
     }
 
     @Override
-    public List<Event> getEvents() {
+    public List<EventI> getEvents() {
         return calendarEvents;
     }
 
@@ -32,8 +32,9 @@ public class Calendar implements CalendarI {
     }
 
     @Override
-    public List<Event> findEvent(Event searchObject) {
+    public List<EventI> findEvent(EventI searchObject) {
         return null;
     }
+
 
 }
