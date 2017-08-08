@@ -75,6 +75,10 @@ public class Scheduler implements SchedulerI {
         return makeEvents();
     }
 
+    private void shuffleBlock() {
+
+    }
+
     private List<EventI> makeEvents() {
         List<EventI> events = new ArrayList<>();
 
