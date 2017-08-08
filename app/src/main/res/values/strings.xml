@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">WindowPlanner</string>
+
+    <string name="main_menu_settings_title">Settings</string>
+
+    <string name="taskform_title">Create a task</string>
+    <string name="taskform_task_1">1. Name your task</string>
+    <string name="taskform_task_2">2. Select your start and end dates</string>
+    <string name="taskform_task_3">3. Select the predicted time for this task</string>
+    <string name="taskform_task_name">Task Name</string>
+    <string name="taskform_start_date">Start Date</string>
+    <string name="taskform_end_date">End Date</string>
+    <string name="taskform_hours"> hours</string>
+    <string name="taskform_create_task">Create Task</string>
+
+    <string name="settings_title">Settings</string>
+
+    <string name="settings_general_settings">General Settings</string>
+
+    <string name="settings_job_length_title">Job Length</string>
+    <string name="settings_job_length_key">job_length_key</string>
+    <string name="settings_job_length_desc">The length of each job that a task is split up into</string>
+    <string name="settings_job_minutes"> minutes</string>
+
 </resources>
