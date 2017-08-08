@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Intent intent = new Intent( MainActivity.this, TaskFormActivity.class );
+            Intent intent = new Intent( MainActivity.this, ImportCalendarActivity.class );
             startActivity( intent );
             }
         });
