@@ -10,6 +10,14 @@ public class Task implements TaskI{
    private String name;
    private int id;
 
+   public Task(List<JobI> jobs, Date startDate, Date endDate, String name, int id) {
+      this.jobs = jobs;
+      this.startDate = startDate;
+      this.endDate = endDate;
+      this.name = name;
+      this.id = id;
+   }
+
    @Override
    public int getId() {
       return id;
