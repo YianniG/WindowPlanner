@@ -5,10 +5,16 @@ package plan.glo.windowplanner.models;
  */
 
 public class Job implements JobI{
-    private Event event;
+    private EventI event = null;
 
     @Override
-    public void reassignEvent(Event event) {
-
+    public boolean hasEvent() {
+        return event != null;
     }
+
+    @Override
+    public void assignEvent(EventI event) {
+        this.event = event;
+    }
+
 }

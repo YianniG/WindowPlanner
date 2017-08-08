@@ -2,5 +2,6 @@ package plan.glo.windowplanner.models;
 
 
 public interface JobI {
-    void reassignEvent(Event event);
+    boolean hasEvent();
+    void assignEvent(EventI event);
 }

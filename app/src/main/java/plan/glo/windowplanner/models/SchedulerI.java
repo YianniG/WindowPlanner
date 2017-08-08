@@ -7,7 +7,5 @@ import java.util.List;
  */
 
 public interface SchedulerI {
-    CalendarI schedule(CalendarI calendarI, List<TaskI> tasks);
-    void addTask(TaskI task);
-    void removeTask(TaskI task);
+    List<EventI> schedule(CalendarI calendarI, List<TaskI> tasks);
 }
