@@ -1,23 +1,30 @@
 package plan.glo.windowplanner.models;
 
+import android.util.SparseArray;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-
-/**
- * Created by zubairchowdhury on 02/08/2017.
- */
 
 public class Scheduler implements SchedulerI {
     private int[] timeArray;
     private static int BLOCK_SIZE = 30; //30 min block size
+    private Date scheduleStartTime;
+    private SparseArray<TaskI> taskHash;
 
     @Override
-    public CalendarI schedule(CalendarI calendarI, List<TaskI> tasks) {
+    public List<EventI> schedule(CalendarI calendarI, List<TaskI> tasks) {
+
+        //Populate hash map for search later on
+        for (TaskI t: tasks) {
+           taskHash.append(t.getId(), t);
+        }
+
         Date endTime = findFurthestEndTime(tasks);
-        Date scheduleStartTime = new Date(System.currentTimeMillis());
+        this.scheduleStartTime = new Date(System.currentTimeMillis());
         int blocksUntilEndTime = blocksInInterval(scheduleStartTime, endTime);
         timeArray = new int[blocksUntilEndTime];
 
@@ -61,17 +68,32 @@ public class Scheduler implements SchedulerI {
             //If unable to find task for this time slot, skip
             if (unassignedJob == null) { continue; }
 
-            //Mark block as full
+            //Mark block as full.
             fillInBlock(i, eligibleTask.getId());
         }
+        //we can do any shuffling before we move on
+        return makeEvents();
+    }
 
+    private List<EventI> makeEvents() {
+        List<EventI> events = new ArrayList<>();
 
+        for (int i = 0; i < timeArray.length; i++) {
+            if (timeArray[i] < 0) { continue;}
 
-//        Assign job
-//        EventI event = constructEvent(startTime, eligibleTask.getId());
-//        unassignedJob.assignEvent(event);
-//        calendarI.addEvent(event);
-//        return null;
+            TaskI t = searchForTask(timeArray[i]);
+
+            EventI e = constructEvent(scheduleStartTime, t.getId());
+
+            events.add(e);
+
+        }
+
+        return events;
+    }
+
+    private TaskI searchForTask(int i) {
+        return taskHash.get(i);
     }
 
     //Might want to create builder
@@ -138,13 +160,4 @@ public class Scheduler implements SchedulerI {
         return maxTime;
     }
 
-    @Override
-    public void addTask(TaskI task) {
-
-    }
-
-    @Override
-    public void removeTask(TaskI task) {
-
-    }
 }
