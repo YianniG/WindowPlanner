@@ -10,6 +10,7 @@ public class Event implements EventI{
     private Date startDate;
     private Date endDate;
     private int taskId;
+    private int eventId;
 
     public Event(Date startDate, Date endDate, int taskId) {
         this.startDate = startDate;
@@ -30,5 +31,10 @@ public class Event implements EventI{
     @Override
     public int getTaskId() {
         return taskId;
+    }
+
+    @Override
+    public int getId() {
+        return eventId;
     }
 }
