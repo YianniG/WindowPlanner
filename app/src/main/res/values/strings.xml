@@ -12,7 +12,6 @@
     <string name="taskform_end_date">End Date</string>
     <string name="taskform_hours"> hours</string>
     <string name="taskform_create_task">Create Task</string>
-
     <string name="settings_title">Settings</string>
 
     <string name="settings_general_settings">General Settings</string>

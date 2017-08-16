@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="plan.glo.windowplanner">
 
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,10 +19,18 @@
             </intent-filter>
         </activity>
 
-        <activity   android:name=".TaskFormActivity"
-                    android:theme="@style/NoToolbarTheme"
-                    android:label="@string/taskform_title"
-                    android:screenOrientation="portrait" />
+        <activity
+            android:name=".TaskFormActivity"
+            android:theme="@style/NoToolbarTheme"
+            android:label="@string/taskform_title"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ImportCalendarActivity"
+            android:theme="@style/NoToolbarTheme"
+            android:label="@string/taskform_create_task"
+            android:screenOrientation="portrait">
+        </activity>
 
     </application>
 

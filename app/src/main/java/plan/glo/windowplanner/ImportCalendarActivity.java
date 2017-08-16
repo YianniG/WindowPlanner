@@ -19,8 +19,6 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.security.AccessController.getContext;
-
 
 public class ImportCalendarActivity extends AppCompatActivity {
 
@@ -78,9 +76,15 @@ public class ImportCalendarActivity extends AppCompatActivity {
 
     public void checkForPermission(){
         if ( ContextCompat.checkSelfPermission( this, Manifest.permission.READ_CALENDAR ) != PackageManager.PERMISSION_GRANTED ){
+
             if (ActivityCompat.shouldShowRequestPermissionRationale( this, Manifest.permission.READ_CALENDAR )){
+
                 showExplanation( getString( R.string.import_permission_title ), getString( R.string.import_permission_desc ) );
+                ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, MY_PERMISSION_REQUEST );
+
+
             } else {
+
                 ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, MY_PERMISSION_REQUEST );
             }
         }
