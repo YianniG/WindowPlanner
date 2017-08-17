@@ -10,11 +10,14 @@ public class Event implements EventI{
     private Date startDate;
     private Date endDate;
     private int taskId;
+    private static int EVENT_COUNTER = 0;
+    private int eventId;
 
     public Event(Date startDate, Date endDate, int taskId) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.taskId = taskId;
+        this.eventId = EVENT_COUNTER++;
     }
 
     @Override
@@ -30,5 +33,10 @@ public class Event implements EventI{
     @Override
     public int getTaskId() {
         return taskId;
+    }
+
+    @Override
+    public int getId() {
+        return eventId;
     }
 }

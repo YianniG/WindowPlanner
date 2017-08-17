@@ -11,4 +11,5 @@ public interface EventI {
     Date getEventStartTime();
     Date getEventEndTime();
     int getTaskId();
+    int getId();
 }
