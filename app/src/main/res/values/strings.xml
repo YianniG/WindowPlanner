@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">WindowPlanner</string>
 
+    <string name="need_permissions_need_permissions">
+        This app requires calendar permissions to function.
+        Close and re-open the app to continue.
+    </string>
     <string name="main_menu_settings_title">Settings</string>
 
     <string name="taskform_title">Create a task</string>
@@ -12,10 +16,13 @@
     <string name="taskform_end_date">End Date</string>
     <string name="taskform_hours"> hours</string>
     <string name="taskform_create_task">Create Task</string>
-
     <string name="settings_title">Settings</string>
 
     <string name="settings_general_settings">General Settings</string>
+
+    <string name="import_importbtn">Import Calendars</string>
+    <string name="import_permission_title">Permission Needed</string>
+    <string name="import_permission_desc">We need the calendar permission to schedule your events</string>
 
     <string name="settings_job_length_title">Job Length</string>
     <string name="settings_job_length_key">job_length_key</string>

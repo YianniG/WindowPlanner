@@ -3,8 +3,6 @@
     package="plan.glo.windowplanner">
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
-    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,8 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity   android:name=".MainActivity"
-                    android:theme="@style/NoToolbarTheme"
+                    android:theme="@style/Theme.AppCompat"
                     android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,10 +20,18 @@
             </intent-filter>
         </activity>
 
-        <activity   android:name=".TaskFormActivity"
-                    android:theme="@style/NoToolbarTheme"
-                    android:label="@string/taskform_title"
-                    android:screenOrientation="portrait" />
+        <activity
+            android:name=".TaskFormActivity"
+            android:theme="@style/NoToolbarTheme"
+            android:label="@string/taskform_title"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ImportCalendarActivity"
+            android:theme="@style/NoToolbarTheme"
+            android:label="@string/taskform_create_task"
+            android:screenOrientation="portrait">
+        </activity>
 
     </application>
 
