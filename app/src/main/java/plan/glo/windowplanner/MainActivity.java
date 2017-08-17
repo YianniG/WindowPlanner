@@ -3,36 +3,45 @@ package plan.glo.windowplanner;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.Button;
 
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import plan.glo.windowplanner.models.EventI;
+import plan.glo.windowplanner.models.Job;
+import plan.glo.windowplanner.models.JobI;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private MaterialCalendarView calendarView;
-    private FloatingActionButton floatingActionButton;
-    private Toolbar toolbar;
+    private Controller controller = Controller.getInstance();
 
-    public static final int CALENDAR_PERMISSION_REQUEST = 101;
+    private static final int CALENDAR_PERMISSION_REQUEST = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        toolbar = ( Toolbar ) findViewById( R.id.main_toolbar );
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
         //TODO: This breaks, because of the hacky way I'm trying to get and notify the user we need permission - ig
         //setSupportActionBar( toolbar );
+
+        //TODO: Add tasks
 
         if (checkForPermission()) {
             loadApp();
@@ -90,14 +99,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadApp() {
         setContentView(R.layout.activity_main);
-        calendarView = (MaterialCalendarView) findViewById( R.id.main_calendarView );
-        floatingActionButton = ( FloatingActionButton ) findViewById( R.id.main_fab );
+        MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_calendarView);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.main_fab);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent( MainActivity.this, ImportCalendarActivity.class );
                 startActivity( intent );
+            }
+        });
+
+
+        Button scheduleButton = (Button) findViewById(R.id.schedule_button);
+        scheduleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<EventI> newEvents = controller.schedule();
+                //TODO: Display the events!
             }
         });
     }

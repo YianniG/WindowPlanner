@@ -1,6 +1,7 @@
 package plan.glo.windowplanner;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,13 +13,12 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import plan.glo.windowplanner.models.Event;
-import plan.glo.windowplanner.models.EventI;
-
-
 public class ImportCalendarActivity extends AppCompatActivity {
+
+    private Controller controller = Controller.getInstance();
 
     private ListView mListView;
     private ImportCalendarAdapter mAdapter;
@@ -86,27 +86,42 @@ public class ImportCalendarActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Import events from all the calendars
+                importEvents();
 
-                // Run query
-                Cursor cur = null;
-                ContentResolver cr = getContentResolver();
-                Uri uri = CalendarContract.Events.CONTENT_URI;
-
-                // Submit the query and get a Cursor object back.
-                cur = cr.query(uri, EVENT_EVENT_PROJECTION, null, null, null);
-
-                while ( cur.moveToNext() ){
-                    String title = cur.getString(PROJECTION_EVENT_TITLE);
-                    long dtstart = cur.getLong(PROJECTION_EVENT_DT_START);
-                    long dtend = cur.getLong(PROJECTION_EVENT_DT_END);
-                    int id = cur.getInt(PROJECTION_EVENT_ID_INDEX);
-
-                    if (dtstart == 0 || dtend == 0) continue;
-
-                    //Create event
-
-                }
+                //Finished importing, go back to Main Activity
+                startActivity(new Intent(ImportCalendarActivity.this, MainActivity.class));
             }
         });
+    }
+
+    private void importEvents() {
+        //Make sure to remove any old events
+        controller.clearEvents();
+
+        // Run query
+        Cursor cur = null;
+        ContentResolver cr = getContentResolver();
+        Uri uri = CalendarContract.Events.CONTENT_URI;
+
+        // Submit the query and get a Cursor object back.
+        cur = cr.query(uri, EVENT_EVENT_PROJECTION, null, null, null);
+
+        while ( cur.moveToNext() ){
+            long rawDTStart = cur.getLong(PROJECTION_EVENT_DT_START);
+            long rawDTEnd   = cur.getLong(PROJECTION_EVENT_DT_END);
+            String title    = cur.getString(PROJECTION_EVENT_TITLE);
+            if (rawDTStart == 0 || rawDTEnd == 0) continue;
+            if (rawDTEnd - rawDTStart == 0) continue;
+
+            //If there's an event that's longer than a day long, don't include it.
+            // A really long event probably doesn't mean you're busy (until it does) Gonna leave for the moment
+            long milliSecondsInADay = 1000 * 60 * 60 * 24;
+            if (rawDTEnd - rawDTStart >= milliSecondsInADay) continue;
+
+            Date dtstart = new Date(rawDTStart);
+            Date dtend = new Date(rawDTEnd);
+            //Create event
+            controller.importEvent(dtstart, dtend, title);
+        }
     }
 }

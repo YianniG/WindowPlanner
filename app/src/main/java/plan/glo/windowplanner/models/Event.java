@@ -39,4 +39,9 @@ public class Event implements EventI{
     public int getId() {
         return eventId;
     }
+
+    @Override
+    public String toString() {
+        return "event: " + eventId + " start: " + startDate.toString() + " end:" + endDate.toString();
+    }
 }

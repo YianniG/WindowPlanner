@@ -9,6 +9,6 @@ public interface TaskI {
     Date getTaskEndDate();
     Date getTaskStartDate();
     List<JobI> getJobs();
-    void modifyTask(Task configObject);
+    void modifyTask(TaskI configObject);
     JobI getFreeJob();
 }

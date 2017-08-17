@@ -8,14 +8,15 @@ public class Task implements TaskI{
    private Date startDate;
    private Date endDate;
    private String name;
+   private static int TASK_COUNT = 0;
    private int id;
 
-   public Task(List<JobI> jobs, Date startDate, Date endDate, String name, int id) {
+   public Task(List<JobI> jobs, Date startDate, Date endDate, String name) {
       this.jobs = jobs;
       this.startDate = startDate;
       this.endDate = endDate;
       this.name = name;
-      this.id = id;
+      this.id = TASK_COUNT++;
    }
 
    @Override
@@ -44,7 +45,7 @@ public class Task implements TaskI{
    }
 
    @Override
-   public void modifyTask(Task configObject) {
+   public void modifyTask(TaskI configObject) {
       this.jobs = configObject.getJobs() == null ? this.getJobs() : configObject.getJobs();
       this.startDate = configObject.getTaskStartDate() == null ? this.getTaskStartDate() : configObject.getTaskStartDate();
       this.endDate = configObject.getTaskEndDate() == null ? this.getTaskEndDate() : configObject.getTaskEndDate();

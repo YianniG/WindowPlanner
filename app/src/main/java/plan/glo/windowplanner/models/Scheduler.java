@@ -13,13 +13,13 @@ public class Scheduler implements SchedulerI {
     private int[] timeArray;
     private static int BLOCK_SIZE = 30; //30 min block size
     private Date scheduleStartTime;
-    private SparseArray<TaskI> taskHash;
+    private SparseArray<TaskI> taskHash = new SparseArray<>();
 
     @Override
     public List<EventI> schedule(CalendarI calendarI, List<TaskI> tasks) {
 
         //Populate hash map for search later on
-        for (TaskI t: tasks) {
+        for (TaskI t : tasks) {
            taskHash.append(t.getId(), t);
         }
 
@@ -31,8 +31,20 @@ public class Scheduler implements SchedulerI {
         //Populated time array, with events from users calendar
         List<EventI> calendarEvents = calendarI.getEvents();
         for (EventI e : calendarEvents) {
+            //skip events that have ended before scheduleStartTime
+            if (e.getEventEndTime().compareTo(scheduleStartTime) == -1) continue;
+            //skip events that start after last task
+            if (e.getEventStartTime().compareTo(endTime) == 1) continue;
+
+            //If the event started before scheduled start time, we pretend it started at
+            // scheduledStartTime
             Date eventStart = e.getEventStartTime();
+            if (eventStart.compareTo(scheduleStartTime) == -1) eventStart = scheduleStartTime;
+
             Date eventEnd = e.getEventEndTime();
+            //If the event starts before endTime and finishes after, we pretend it finishes at endTime
+            if (eventEnd.compareTo(endTime) == 1) eventEnd = endTime;
+
             int blocksInEvent = blocksInInterval(eventStart, eventEnd);
             int startIndex = blocksInInterval(scheduleStartTime, eventStart);
             int endIndex = startIndex + blocksInEvent;
@@ -135,7 +147,7 @@ public class Scheduler implements SchedulerI {
 
     //Assume 30 min blocks
     private int blocksInInterval(Date startTime, Date endTime) {
-        if (endTime.after(startTime)) {
+        if (startTime.compareTo(endTime) == 1) {
             throw new ScheduleException();
         }
 
@@ -143,11 +155,10 @@ public class Scheduler implements SchedulerI {
         long startTimeMs = startTime.getTime();
         long difference = endTimeMs - startTimeMs;
 
-        long minute = difference / 1000 / 60;
+        double minute = difference / 1000 / 60;
 
-        long numberOfBlocks = minute * BLOCK_SIZE;
-
-        return (int) numberOfBlocks;
+        int numberOfBlocks = (int) Math.ceil(minute / BLOCK_SIZE);
+        return numberOfBlocks;
     }
 
     private Date findFurthestEndTime(List<TaskI> tasks) {
