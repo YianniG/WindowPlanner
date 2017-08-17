@@ -10,8 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity   android:name=".MainActivity"
-                    android:theme="@style/NoToolbarTheme"
+                    android:theme="@style/Theme.AppCompat"
                     android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

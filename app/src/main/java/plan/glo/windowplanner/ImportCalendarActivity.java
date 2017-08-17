@@ -1,23 +1,21 @@
 package plan.glo.windowplanner;
 
-import android.Manifest;
 import android.content.ContentResolver;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import plan.glo.windowplanner.models.Event;
+import plan.glo.windowplanner.models.EventI;
 
 
 public class ImportCalendarActivity extends AppCompatActivity {
@@ -27,8 +25,8 @@ public class ImportCalendarActivity extends AppCompatActivity {
     private Button mImportBtn;
 
     // Projection array. Creating indices for this array instead of doing
-// dynamic lookups improves performance.
-    public static final String[] EVENT_PROJECTION = new String[] {
+    // dynamic lookups improves performance.
+    public static final String[] EVENT_PROJECTION = new String[]{
             CalendarContract.Calendars._ID,                           // 0
             CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
             CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
@@ -41,19 +39,31 @@ public class ImportCalendarActivity extends AppCompatActivity {
     private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
     private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
 
-    public static final int MY_PERMISSION_REQUEST = 101;
+    // Projection array. Creating indices for this array instead of doing
+    // dynamic lookups improves performance.
+    public static final String[] EVENT_EVENT_PROJECTION = new String[]{
+            CalendarContract.Events._ID,           // 0
+            CalendarContract.Events.DTSTART,       // 1
+            CalendarContract.Events.DTEND,         // 2
+            CalendarContract.Events.TITLE          // 3
+    };
+
+    // The indices for the projection array above.
+    private static final int PROJECTION_EVENT_ID_INDEX = 0;
+    private static final int PROJECTION_EVENT_DT_START = 1;
+    private static final int PROJECTION_EVENT_DT_END = 2;
+    private static final int PROJECTION_EVENT_TITLE = 3;
+
 
     private List<String> mCalendars = new ArrayList<>();
 
     @Override
-    protected void onCreate( Bundle savedInstanceState ){
-        super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_import );
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_import);
 
-        mListView = ( ListView ) findViewById( R.id.import_listview );
-        mImportBtn = ( Button ) findViewById( R.id.import_button );
-
-        checkForPermission();
+        mListView = (ListView) findViewById(R.id.import_listview);
+        mImportBtn = (Button) findViewById(R.id.import_button);
 
         // Run query
         Cursor cur = null;
@@ -72,35 +82,31 @@ public class ImportCalendarActivity extends AppCompatActivity {
         mAdapter = new ImportCalendarAdapter( this, mCalendars );
         mListView.setAdapter( mAdapter );
 
-    }
+        mImportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Import events from all the calendars
 
-    public void checkForPermission(){
-        if ( ContextCompat.checkSelfPermission( this, Manifest.permission.READ_CALENDAR ) != PackageManager.PERMISSION_GRANTED ){
+                // Run query
+                Cursor cur = null;
+                ContentResolver cr = getContentResolver();
+                Uri uri = CalendarContract.Events.CONTENT_URI;
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale( this, Manifest.permission.READ_CALENDAR )){
+                // Submit the query and get a Cursor object back.
+                cur = cr.query(uri, EVENT_EVENT_PROJECTION, null, null, null);
 
-                showExplanation( getString( R.string.import_permission_title ), getString( R.string.import_permission_desc ) );
-                ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, MY_PERMISSION_REQUEST );
+                while ( cur.moveToNext() ){
+                    String title = cur.getString(PROJECTION_EVENT_TITLE);
+                    long dtstart = cur.getLong(PROJECTION_EVENT_DT_START);
+                    long dtend = cur.getLong(PROJECTION_EVENT_DT_END);
+                    int id = cur.getInt(PROJECTION_EVENT_ID_INDEX);
 
+                    if (dtstart == 0 || dtend == 0) continue;
 
-            } else {
+                    //Create event
 
-                ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, MY_PERMISSION_REQUEST );
+                }
             }
-        }
+        });
     }
-
-    private void showExplanation(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder( this );
-        builder.setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        ActivityCompat.requestPermissions( ImportCalendarActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
-                    }
-                });
-        builder.create().show();
-    }
-
-
 }
