@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -17,13 +18,9 @@ import android.widget.Button;
 
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import plan.glo.windowplanner.models.EventI;
-import plan.glo.windowplanner.models.Job;
-import plan.glo.windowplanner.models.JobI;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -41,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         //TODO: This breaks, because of the hacky way I'm trying to get and notify the user we need permission - ig
         //setSupportActionBar( toolbar );
 
-        //TODO: Add tasks
+        //TODO: Show tasks that have been added
+        //TODO: Show scheduled events
 
         if (checkForPermission()) {
             loadApp();
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 List<EventI> newEvents = controller.schedule();
-                //TODO: Display the events!
+                Log.d("Schedule", "Schedule!");
             }
         });
     }

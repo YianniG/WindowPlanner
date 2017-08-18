@@ -8,15 +8,6 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/taskform_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/transparent"
-        app:elevation="0dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,6 +28,12 @@
         android:hint="@string/taskform_task_name" />
 
     <TextView
+        android:id="@+id/task_name_error_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light" />
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -54,6 +51,12 @@
         android:background="?selectableItemBackground"
         android:text="@string/taskform_start_date" />
 
+    <TextView
+        android:id="@+id/task_start_date_error_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light" />
+
     <Button
         android:id="@+id/taskform_task_end"
         android:layout_width="match_parent"
@@ -62,6 +65,12 @@
         android:background="?selectableItemBackground"
         android:text="@string/taskform_end_date" />
 
+
+    <TextView
+        android:id="@+id/task_end_date_error_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light" />
 
     <TextView
         android:layout_width="match_parent"
@@ -82,34 +91,41 @@
             android:id="@+id/taskform_seekbar"
             style="@style/SeekBarWithoutSteps"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:max="50"
-            android:progress="25" />
+            android:layout_weight="1"
+            android:max="100"
+            android:progress="0" />
 
         <TextView
             android:id="@+id/taskform_seekbar_num"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textSize="12sp"
-            android:textAllCaps="true"
             android:gravity="center"
+            android:text=""
+            android:textAllCaps="true"
             android:textColor="@android:color/white"
-            android:text="" />
+            android:textSize="12sp" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/task_number_of_jobs_error_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light" />
+
     <Button
         android:id="@+id/taskform_task_create"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:textSize="30sp"
-        android:textAllCaps="true"
-        android:gravity="left|center"
-        android:textColor="@color/colorAccent"
         android:background="?selectableItemBackground"
-        android:text="@string/taskform_create_task" />
+        android:gravity="left|center"
+        android:text="@string/taskform_create_task"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="30sp" />
 
 
 </LinearLayout>

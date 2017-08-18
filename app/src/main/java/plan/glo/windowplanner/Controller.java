@@ -9,6 +9,7 @@ import java.util.Map;
 import plan.glo.windowplanner.models.Calendar;
 import plan.glo.windowplanner.models.Event;
 import plan.glo.windowplanner.models.EventI;
+import plan.glo.windowplanner.models.Job;
 import plan.glo.windowplanner.models.JobI;
 import plan.glo.windowplanner.models.Scheduler;
 import plan.glo.windowplanner.models.Task;
@@ -44,7 +45,12 @@ public class Controller {
         this.importedEvents.clear();
     }
 
-    public void addTask(List<JobI> jobs, Date start, Date end, String title) {
+    public void addTask(int numberOfJobs, Date start, Date end, String title) {
+        List<JobI> jobs = new ArrayList<>();
+        for (int i = 0; i < numberOfJobs; i++) {
+            jobs.add(new Job());
+        }
+
         TaskI newTask = new Task(jobs, start, end, title);
         this.tasks.put(newTask.getId(), newTask);
     }
