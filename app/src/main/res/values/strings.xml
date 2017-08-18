@@ -6,6 +6,7 @@
         Close and re-open the app to continue.
     </string>
     <string name="schedule">Schedule</string>
+    <string name="main_menu_add_task">Add Task</string>
     <string name="main_menu_settings_title">Settings</string>
 
     <string name="taskform_title">Create a task</string>

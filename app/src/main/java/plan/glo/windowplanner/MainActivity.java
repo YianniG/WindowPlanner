@@ -110,6 +110,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button newTaskButton = (Button) findViewById(R.id.add_task);
+        newTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent( MainActivity.this, TaskFormActivity.class );
+                startActivity( intent );
+            }
+        });
 
         Button scheduleButton = (Button) findViewById(R.id.schedule_button);
         scheduleButton.setOnClickListener(new View.OnClickListener() {

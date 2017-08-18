@@ -28,5 +28,33 @@ import java.util.Date;
 
 public class TaskFormActivity extends PreferenceActivity {
 
+    private String name;
+    private Date startDate;
+    private Date endDate;
+    private int numberOfJobs;
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_taskform);
+
+        EditText taskName = (EditText) findViewById(R.id.taskform_task_title);
+
+        //TODO: Date button's need to select date
+        Button startDateButton = (Button) findViewById(R.id.taskform_task_start);
+        Button endDateButton = (Button) findViewById(R.id.taskform_task_end);
+
+        SeekBar length = (SeekBar) findViewById(R.id.taskform_seekbar);
+        Button addTask = (Button) findViewById(R.id.taskform_task_create);
+
+        addTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO: Verify all inputs are given, else give error - highlight missing info
+
+                //TODO: Take inputs and contruct a task and add to controller
+            }
+        });
+    }
 }
