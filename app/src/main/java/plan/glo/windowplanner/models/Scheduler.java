@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Scheduler implements SchedulerI {
-    private int[] timeArray;
+    private int[] timeArray;   // Blocks of BLOCK_SIZE containing task id's. id < 0 = imported event
     private static int BLOCK_SIZE = 30; //30 min block size
     private Date scheduleStartTime;
     private SparseArray<TaskI> taskHash = new SparseArray<>();
@@ -88,21 +88,55 @@ public class Scheduler implements SchedulerI {
     }
 
     private void shuffleBlock() {
-
+        //TODO: shuffle blocks to increase variance of tasks done each day
     }
 
     private List<EventI> makeEvents() {
         List<EventI> events = new ArrayList<>();
 
+        // Track contiguous block of blocks with same taskId
+        int startOfContiguousBlock = 0;
         for (int i = 0; i < timeArray.length; i++) {
-            if (timeArray[i] < 0) { continue;}
+            if (timeArray[i] < 0) {
+                startOfContiguousBlock = i;
+                continue;
+            }
 
-            TaskI t = searchForTask(timeArray[i]);
+            // Check not the first block
+            if (i > 0) {
+                if (timeArray[i - 1] < 0) {
+                    // Exiting block of imported events
+                    startOfContiguousBlock = i;
+                } else if (timeArray[i] != timeArray[i - 1]) {
+                    // End of block of contiguous id's
+                    // Make event for previous block
+                    TaskI t = searchForTask(timeArray[i - 1]);
 
-            EventI e = constructEvent(scheduleStartTime, t.getId());
+                    Date startTime = new Date(scheduleStartTime.getTime()
+                            + startOfContiguousBlock * BLOCK_SIZE);
+                    events.add(constructEvent(startTime, i - startOfContiguousBlock, t.getId()));
 
-            events.add(e);
+                    startOfContiguousBlock = i;
+                }
+            }
 
+            // Account for last block
+            if (i == timeArray.length - 1) {
+
+                int eventLengthInBlocks;
+                if (i == startOfContiguousBlock) {
+                    // Create event for final block
+                    eventLengthInBlocks = 1;
+                } else {
+                    // Create event for contiguous block, finishing on final block
+                    eventLengthInBlocks = i - startOfContiguousBlock + 1;
+                }
+
+                TaskI t = searchForTask(timeArray[i]);
+                Date startTime = new Date(scheduleStartTime.getTime()
+                        + startOfContiguousBlock * BLOCK_SIZE);
+                events.add(constructEvent(startTime, eventLengthInBlocks, t.getId()));
+            }
         }
 
         return events;
@@ -113,9 +147,9 @@ public class Scheduler implements SchedulerI {
     }
 
     //Might want to create builder
-    private EventI constructEvent(Date startTime, int taskId) {
-        //Event is 30mins long
-        Date endTime = new Date(startTime.getTime() + BLOCK_SIZE * 60 * 1000);
+    private EventI constructEvent(Date startTime, int lengthInBlocks, int taskId) {
+        //Event is length in blocks long
+        Date endTime = new Date(startTime.getTime() + BLOCK_SIZE * lengthInBlocks * 60 * 1000);
 
         return new Event(startTime, endTime, taskId);
     }
@@ -155,10 +189,10 @@ public class Scheduler implements SchedulerI {
         long startTimeMs = startTime.getTime();
         long difference = endTimeMs - startTimeMs;
 
-        double minute = difference / 1000 / 60;
+        double minutes = difference / 1000 / 60;
 
-        int numberOfBlocks = (int) Math.ceil(minute / BLOCK_SIZE);
-        return numberOfBlocks;
+        // Number of blocks
+        return (int) Math.ceil(minutes / BLOCK_SIZE);
     }
 
     private Date findFurthestEndTime(List<TaskI> tasks) {
