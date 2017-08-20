@@ -1,9 +1,11 @@
 package plan.glo.windowplanner;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,18 +16,26 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String FIRST_TIME_KEY = "first_time_key";
+
     private MaterialCalendarView calendarView;
     private FloatingActionButton floatingActionButton;
     private Toolbar toolbar;
+
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        firstRunLogic();
+
         toolbar = ( Toolbar ) findViewById( R.id.main_toolbar );
         calendarView = (MaterialCalendarView) findViewById( R.id.main_calendarView );
         floatingActionButton = ( FloatingActionButton ) findViewById( R.id.main_fab );
+
+
 
         setSupportActionBar( toolbar );
 
@@ -33,10 +43,25 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Intent intent = new Intent( MainActivity.this, ImportCalendarActivity.class );
-            startActivity( intent );
+                //TODO Change to added tasks/events whatever
+                Intent intent = new Intent( MainActivity.this, ImportCalendarActivity.class );
+                startActivity( intent );
             }
         });
+    }
+
+    private void firstRunLogic(){
+        preferences = PreferenceManager.getDefaultSharedPreferences( this );
+        if ( !preferences.contains( FIRST_TIME_KEY ) ){
+            //Need to ask them to import calendar
+            Intent intent = new Intent( this, ImportCalendarActivity.class );
+            //Cheekily will reuse the first time key
+            intent.putExtra( FIRST_TIME_KEY,  true );
+
+            finish();
+            startActivity( intent );
+
+        }
     }
 
     @Override
