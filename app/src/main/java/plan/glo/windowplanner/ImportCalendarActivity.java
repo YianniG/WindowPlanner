@@ -54,7 +54,11 @@ public class ImportCalendarActivity extends AppCompatActivity {
         mImportBtn = ( Button ) findViewById( R.id.import_button );
 
         checkForPermission();
+    }
 
+
+
+    private void setupScreen(){
         // Run query
         Cursor cur = null;
         ContentResolver cr = getContentResolver();
@@ -71,22 +75,21 @@ public class ImportCalendarActivity extends AppCompatActivity {
 
         mAdapter = new ImportCalendarAdapter( this, mCalendars );
         mListView.setAdapter( mAdapter );
-
     }
 
-    public void checkForPermission(){
+    /**
+     * All the permission code
+     */
+
+    private void checkForPermission(){
         if ( ContextCompat.checkSelfPermission( this, Manifest.permission.READ_CALENDAR ) != PackageManager.PERMISSION_GRANTED ){
-
             if (ActivityCompat.shouldShowRequestPermissionRationale( this, Manifest.permission.READ_CALENDAR )){
-
                 showExplanation( getString( R.string.import_permission_title ), getString( R.string.import_permission_desc ) );
-                ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, MY_PERMISSION_REQUEST );
-
-
             } else {
-
                 ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, MY_PERMISSION_REQUEST );
             }
+        }else {
+            setupScreen();
         }
     }
 
@@ -96,10 +99,28 @@ public class ImportCalendarActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ActivityCompat.requestPermissions( ImportCalendarActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
+                        ActivityCompat.requestPermissions( ImportCalendarActivity.this, new String[]{Manifest.permission.READ_CALENDAR}, MY_PERMISSION_REQUEST);
                     }
                 });
         builder.create().show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSION_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //Permission granted, yes fam
+                    setupScreen();
+                } else {
+                    //Didn't grant permission :(, start again lol
+                    checkForPermission();
+                }
+                return;
+            }
+
+        }
     }
 
 
