@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +21,20 @@ import java.util.Map;
 public class ImportCalendarAdapter extends BaseAdapter{
 
     private Context context;
-    private Map<String, Boolean> calendarMap;
-    private List<String> calendars;
+    private static boolean DEFAULT_CHECKED = true;
+    private Map<Integer, String> calendars;
+    private List<Integer> calendarOrder;
+    private Map<Integer, Boolean> calendarMap;
     private LayoutInflater inflater;
 
-    public ImportCalendarAdapter( Context context, List<String> calendars ){
+    public ImportCalendarAdapter( Context context, Map<Integer, String> calendars ){
         this.context = context;
         inflater = LayoutInflater.from( context );
         calendarMap = new HashMap<>();
-        for ( String cal : calendars ){
-            calendarMap.put( cal, true );
+        calendarOrder = new ArrayList<>();
+        for ( Integer cal : calendars.keySet() ){
+            calendarMap.put(cal, DEFAULT_CHECKED);
+            calendarOrder.add(cal);
         }
         this.calendars = calendars;
     }
@@ -42,7 +47,7 @@ public class ImportCalendarAdapter extends BaseAdapter{
 
     @Override
     public Object getItem(int i) {
-        return calendarMap.get( i );
+        return calendarMap.get(calendarOrder.get(i));
     }
 
     @Override
@@ -53,8 +58,9 @@ public class ImportCalendarAdapter extends BaseAdapter{
     @Override
     public View getView(int pos, View convertView, ViewGroup viewGroup) {
 
-        final String currentName = calendars.get(pos);
-        boolean currentSet = calendarMap.get( currentName );
+        final int calendarId = calendarOrder.get(pos);
+        final String currentName = calendars.get(calendarId);
+        boolean currentSet = calendarMap.get(calendarId);
 
         if ( convertView == null )
             convertView = inflater.inflate( R.layout.list_item_calendar_select, null );
@@ -63,7 +69,7 @@ public class ImportCalendarAdapter extends BaseAdapter{
         CheckBox checkBox = (CheckBox) convertView.findViewById( R.id.list_item_checkbox );
 
         if ( mTitle != null ){
-            mTitle.setText( currentName );
+            mTitle.setText(currentName);
         }
 
         if ( checkBox != null ){
@@ -71,11 +77,15 @@ public class ImportCalendarAdapter extends BaseAdapter{
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    calendarMap.put( currentName, b );
+                    calendarMap.put(calendarId, b );
                 }
             });
         }
 
         return convertView;
+    }
+
+    public Map<Integer, Boolean> getCheckedCalendars() {
+        return calendarMap;
     }
 }
