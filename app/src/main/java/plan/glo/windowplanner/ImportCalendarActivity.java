@@ -89,7 +89,7 @@ public class ImportCalendarActivity extends AppCompatActivity {
                 importEvents();
 
                 //Finished importing, go back to Main Activity
-                startActivity(new Intent(ImportCalendarActivity.this, MainActivity.class));
+                finish();
             }
         });
     }

@@ -17,4 +17,9 @@ public class Job implements JobI{
         this.event = event;
     }
 
+    @Override
+    public EventI getEvent() {
+        return event;
+    }
+
 }

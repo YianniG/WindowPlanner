@@ -12,11 +12,16 @@ public class Task implements TaskI{
    private int id;
 
    public Task(List<JobI> jobs, Date startDate, Date endDate, String name) {
-      this.jobs = jobs;
-      this.startDate = startDate;
-      this.endDate = endDate;
-      this.name = name;
-      this.id = TASK_COUNT++;
+       this(jobs, startDate, endDate, name, TASK_COUNT++);
+   }
+
+   Task(List<JobI> jobs, Date startDate, Date endDate, String name, int id) {
+       this.jobs      = jobs;
+       this.startDate = startDate;
+       this.endDate   = endDate;
+       this.name      = name;
+       this.id        = id;
+       TASK_COUNT     = Math.max(id, TASK_COUNT);
    }
 
    @Override
