@@ -28,12 +28,12 @@ public class StoreEvent {
                 }
 
                 case "startTime": {
-                    startDate = new Date(reader.nextInt());
+                    startDate = new Date(reader.nextLong());
                     break;
                 }
 
                 case "endTime": {
-                    endDate = new Date(reader.nextInt());
+                    endDate = new Date(reader.nextLong());
                     break;
                 }
 

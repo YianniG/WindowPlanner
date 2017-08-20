@@ -61,12 +61,12 @@ class StoreTask {
                 }
 
                 case "startDate": {
-                    startDate = new Date(reader.nextInt());
+                    startDate = new Date(reader.nextLong());
                     break;
                 }
 
                 case "endDate": {
-                    endDate = new Date(reader.nextInt());
+                    endDate = new Date(reader.nextLong());
                     break;
                 }
 
