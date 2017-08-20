@@ -21,11 +21,13 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import java.util.List;
 
 import plan.glo.windowplanner.models.EventI;
+import plan.glo.windowplanner.models.Store;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private Controller controller = Controller.getInstance();
+    private Store store = new Store(this);
 
     private static final int CALENDAR_PERMISSION_REQUEST = 101;
 
@@ -97,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadApp() {
         setContentView(R.layout.activity_main);
+        controller.addObserver(store);
+        controller.loadSavedState(store);
+
         MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_calendarView);
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.main_fab);
 

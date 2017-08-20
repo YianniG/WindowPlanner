@@ -72,7 +72,6 @@ public class Store implements Observer {
     // Anytime the controller gets updated, store saves its state
     @Override
     public void update(Observable observable, Object o) {
-        Log.i("Store", "saving tasks");
         if (observable instanceof Controller) {
             Controller controller = (Controller) observable;
 
