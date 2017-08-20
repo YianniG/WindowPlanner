@@ -58,8 +58,6 @@ public class ImportCalendarActivity extends AppCompatActivity {
         mListView = ( ListView ) findViewById( R.id.import_listview );
         mImportBtn = ( Button ) findViewById( R.id.import_button );
 
-        checkForPermission();
-
         Intent intent = getIntent();
 
         if ( intent != null && intent.getExtras() != null && intent.getExtras().containsKey( MainActivity.FIRST_TIME_KEY ) ){
@@ -69,6 +67,8 @@ public class ImportCalendarActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        checkForPermission();
 
     }
 
