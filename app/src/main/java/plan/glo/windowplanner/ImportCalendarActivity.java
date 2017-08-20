@@ -14,6 +14,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -73,13 +75,28 @@ public class ImportCalendarActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        final int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
-            return true;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if ( firstRun ){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate( R.menu.import_calendar, menu );
         }
-        return false;
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch( item.getItemId() ){
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.main_menu_import_calendar:
+                Intent intent = new Intent( ImportCalendarActivity.this, MainActivity.class );
+                intent.putExtra( MainActivity.OVERRIDE_EXTRA, true );
+                finish();
+                startActivity( intent );
+                return true;
+        }
     }
 
     private void setupScreen(){
