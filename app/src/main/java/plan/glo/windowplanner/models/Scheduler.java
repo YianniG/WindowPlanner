@@ -18,14 +18,21 @@ public class Scheduler implements SchedulerI {
     @Override
     public List<EventI> schedule(CalendarI calendarI, List<TaskI> tasks) {
 
-        //Populate hash map for search later on
+        // Populate hash map for search later on
         for (TaskI t : tasks) {
            taskHash.append(t.getId(), t);
         }
 
         Date endTime = findFurthestEndTime(tasks);
         this.scheduleStartTime = new Date(System.currentTimeMillis());
+
+        // If deadline has already passed, can't schedule
+        if (endTime.before(scheduleStartTime)) return new ArrayList<>();
+
         int blocksUntilEndTime = blocksInInterval(scheduleStartTime, endTime);
+        // If zero blocks in interval, can't schedule
+        if (blocksUntilEndTime == 0) return new ArrayList<>();
+
         timeArray = new int[blocksUntilEndTime];
 
         //Populated time array, with events from users calendar
