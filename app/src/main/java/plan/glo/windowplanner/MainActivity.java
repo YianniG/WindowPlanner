@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO Change to added tasks/events whatever
-                Intent intent = new Intent( MainActivity.this, ImportCalendarActivity.class );
-                startActivity( intent );
             }
         });
     }
@@ -69,6 +67,16 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate( R.menu.main_menu, menu );
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch( item.getItemId() ){
+            case R.id.main_menu_import_calendar:
+                Intent intent = new Intent( MainActivity.this, ImportCalendarActivity.class );
+                startActivity( intent );
+                break;
+        }
     }
 
 
