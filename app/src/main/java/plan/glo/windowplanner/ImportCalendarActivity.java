@@ -97,6 +97,7 @@ public class ImportCalendarActivity extends AppCompatActivity {
                 startActivity( intent );
                 return true;
         }
+        return false;
     }
 
     private void setupScreen(){
