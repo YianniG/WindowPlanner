@@ -3,6 +3,7 @@ package plan.glo.windowplanner;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -45,6 +47,8 @@ public class ImportCalendarActivity extends AppCompatActivity {
 
     private List<String> mCalendars = new ArrayList<>();
 
+    private boolean firstRun = false;
+
     @Override
     protected void onCreate( Bundle savedInstanceState ){
         super.onCreate( savedInstanceState );
@@ -54,9 +58,28 @@ public class ImportCalendarActivity extends AppCompatActivity {
         mImportBtn = ( Button ) findViewById( R.id.import_button );
 
         checkForPermission();
+
+        Intent intent = getIntent();
+
+        if ( intent != null && intent.getExtras() != null && intent.getExtras().containsKey( MainActivity.FIRST_TIME_KEY ) ){
+            //This is a first run
+            firstRun = true;
+        }else {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        final int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return false;
+    }
 
     private void setupScreen(){
         // Run query
