@@ -111,7 +111,6 @@ public class ImportCalendarActivity extends AppCompatActivity {
         while ( cur.moveToNext() ){
             String displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
             mCalendars.add( displayName );
-            Log.d("ImportCalendayActivity", displayName);
         }
 
         mAdapter = new ImportCalendarAdapter( this, mCalendars );
