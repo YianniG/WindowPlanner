@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -83,7 +84,7 @@ public class ImportCalendarActivity extends AppCompatActivity {
 
     private void setupScreen(){
         // Run query
-        Cursor cur = null;
+        Cursor cur;
         ContentResolver cr = getContentResolver();
         Uri uri = CalendarContract.Calendars.CONTENT_URI;
 
@@ -125,6 +126,19 @@ public class ImportCalendarActivity extends AppCompatActivity {
                         ActivityCompat.requestPermissions( ImportCalendarActivity.this, new String[]{Manifest.permission.READ_CALENDAR}, MY_PERMISSION_REQUEST);
                     }
                 });
+
+        if ( firstRun ){
+            builder.setNegativeButton(R.string.import_permission_explore, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent( ImportCalendarActivity.this, MainActivity.class );
+                    intent.putExtra( MainActivity.OVERRIDE_EXTRA, true );
+                    finish();
+                    startActivity( intent );
+                }
+            });
+        }
+
         builder.create().show();
     }
 

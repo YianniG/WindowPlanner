@@ -17,6 +17,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 public class MainActivity extends AppCompatActivity {
 
     public static final String FIRST_TIME_KEY = "first_time_key";
+    public static final String OVERRIDE_EXTRA = "override";
 
     private MaterialCalendarView calendarView;
     private FloatingActionButton floatingActionButton;
@@ -29,7 +30,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        firstRunLogic();
+        Intent intent = getIntent();
+
+        if ( intent != null && intent.getExtras() != null && intent.getExtras().containsKey( OVERRIDE_EXTRA ) ){
+            //This is a first run explore app override
+        }else {
+            firstRunLogic();
+        }
 
         toolbar = ( Toolbar ) findViewById( R.id.main_toolbar );
         calendarView = (MaterialCalendarView) findViewById( R.id.main_calendarView );
@@ -75,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.main_menu_import_calendar:
                 Intent intent = new Intent( MainActivity.this, ImportCalendarActivity.class );
                 startActivity( intent );
-                break;
+                return true;
         }
+        return false;
     }
 
 
