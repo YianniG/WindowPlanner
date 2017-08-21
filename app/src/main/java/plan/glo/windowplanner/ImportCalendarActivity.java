@@ -1,5 +1,6 @@
 package plan.glo.windowplanner;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,7 +9,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +29,8 @@ import java.util.Map;
 public class ImportCalendarActivity extends AppCompatActivity {
 
     private Controller controller = Controller.getInstance();
+
+    private static final int CALENDAR_PERMISSION_REQUEST = 101;
 
     private ListView mListView;
     private ImportCalendarAdapter mAdapter;
@@ -137,8 +144,15 @@ public class ImportCalendarActivity extends AppCompatActivity {
                 //Import events from all the calendars
                 importEvents();
 
-                //Finished importing, go back to Main Activity
-                finish();
+                if ( firstRun ){
+                    PreferenceManager.getDefaultSharedPreferences( ImportCalendarActivity.this ).edit().putBoolean( MainActivity.FIRST_TIME_KEY, true ).apply();
+
+                    Intent intent = new Intent( ImportCalendarActivity.this, MainActivity.class );
+                    finish();
+                    startActivity( intent );
+                }else {
+                    finish();
+                }
             }
         });
     }
@@ -191,7 +205,7 @@ public class ImportCalendarActivity extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale( this, Manifest.permission.READ_CALENDAR )){
                 showExplanation( getString( R.string.import_permission_title ), getString( R.string.import_permission_desc ) );
             } else {
-                ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, MY_PERMISSION_REQUEST );
+                ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, CALENDAR_PERMISSION_REQUEST );
             }
         }else {
             setupScreen();
@@ -204,7 +218,7 @@ public class ImportCalendarActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ActivityCompat.requestPermissions( ImportCalendarActivity.this, new String[]{Manifest.permission.READ_CALENDAR}, MY_PERMISSION_REQUEST);
+                        ActivityCompat.requestPermissions( ImportCalendarActivity.this, new String[]{Manifest.permission.READ_CALENDAR}, CALENDAR_PERMISSION_REQUEST );
                     }
                 });
 
@@ -226,7 +240,7 @@ public class ImportCalendarActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSION_REQUEST: {
+            case CALENDAR_PERMISSION_REQUEST: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Permission granted, yes fam

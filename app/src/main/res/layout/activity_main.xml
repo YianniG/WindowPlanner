@@ -23,19 +23,19 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <Button
-            android:id="@+id/add_task"
-            android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            tools:text="@string/main_menu_add_task" />
-
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/main_calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:mcv_selectionColor="?attr/colorPrimary"
             app:mcv_showOtherDates="all" />
+
+        <Button
+            android:id="@+id/schedule_button"
+            android:layout_width="189dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/schedule" />
 
     </LinearLayout>
 
@@ -48,12 +48,6 @@
         android:src="@drawable/ic_add_white_24dp"
         android:layout_margin="16dp" />
 
-    <Button
-        android:id="@+id/schedule_button"
-        android:layout_width="189dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:visibility="visible"
-        tools:text="@string/schedule" />
+
 
 </android.support.design.widget.CoordinatorLayout>

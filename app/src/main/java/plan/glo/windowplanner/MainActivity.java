@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private Controller controller = Controller.getInstance();
     private Store store = new Store(this);
 
-    private static final int CALENDAR_PERMISSION_REQUEST = 101;
     public static final String FIRST_TIME_KEY = "first_time_key";
     public static final String OVERRIDE_EXTRA = "override";
 
@@ -60,19 +59,11 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent( MainActivity.this, ImportCalendarActivity.class );
-                startActivity( intent );
-            }
-        });
-
-        Button newTaskButton = (Button) findViewById(R.id.add_task);
-        newTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 Intent intent = new Intent( MainActivity.this, TaskFormActivity.class );
                 startActivity( intent );
             }
         });
+
 
         Button scheduleButton = (Button) findViewById(R.id.schedule_button);
         scheduleButton.setOnClickListener(new View.OnClickListener() {
