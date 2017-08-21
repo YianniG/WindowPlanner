@@ -9,6 +9,9 @@
     <string name="main_menu_add_task">Add Task</string>
     <string name="main_menu_settings_title">Settings</string>
 
+    <string name="main_bottom_dayview">Day View</string>
+    <string name="main_bottom_taskview">Task View</string>
+
     <string name="taskform_title">Create a task</string>
     <string name="taskform_task_1">1. Name your task</string>
     <string name="taskform_task_2">2. Select your start and end dates</string>
