@@ -145,7 +145,8 @@ public class ImportCalendarActivity extends AppCompatActivity {
                 importEvents();
 
                 if ( firstRun ){
-                    PreferenceManager.getDefaultSharedPreferences( ImportCalendarActivity.this ).edit().putBoolean( MainActivity.FIRST_TIME_KEY, true ).apply();
+                    PreferenceManager.getDefaultSharedPreferences( ImportCalendarActivity.this )
+                            .edit().putBoolean( MainActivity.FIRST_TIME_KEY, true ).apply();
 
                     Intent intent = new Intent( ImportCalendarActivity.this, MainActivity.class );
                     finish();
@@ -164,7 +165,15 @@ public class ImportCalendarActivity extends AppCompatActivity {
         Log.d("ImportCalendayActivity", "Importing calendars");
         Map<Integer, Boolean> isChecked = mAdapter.getCheckedCalendars();
 
-        // Run query
+        // Mark the calendars to import and track
+        controller.stopTrackingCalendars();
+        for (Integer calID : isChecked.keySet()) {
+            if (isChecked.get(calID)) {
+                controller.trackCalendar(calID);
+            }
+        }
+
+        // Start importing calendars
         Cursor cur = null;
         ContentResolver cr = getContentResolver();
         Uri uri = CalendarContract.Events.CONTENT_URI;
