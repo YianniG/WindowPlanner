@@ -5,14 +5,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -30,75 +34,23 @@ public class MainActivity extends AppCompatActivity {
     private Store store = new Store(this);
 
     private static final int CALENDAR_PERMISSION_REQUEST = 101;
+    public static final String FIRST_TIME_KEY = "first_time_key";
+    public static final String OVERRIDE_EXTRA = "override";
+
+    private MaterialCalendarView calendarView;
+    private FloatingActionButton floatingActionButton;
+    private Toolbar toolbar;
+
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar( toolbar );
 
-        //TODO: This breaks, because of the hacky way I'm trying to get and notify the user we need permission - ig
-        //setSupportActionBar( toolbar );
-
-        //TODO: Show tasks that have been added
-        //TODO: Show scheduled events
-
-        if (checkForPermission()) {
-            loadApp();
-        } else {
-            loadNeedPermissions();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate( R.menu.main_menu, menu );
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    private boolean checkForPermission(){
-        if ( ContextCompat.checkSelfPermission( this, Manifest.permission.READ_CALENDAR ) != PackageManager.PERMISSION_GRANTED ){
-            if (ActivityCompat.shouldShowRequestPermissionRationale( this, Manifest.permission.READ_CALENDAR )){
-                //showExplanation( getString( R.string.import_permission_title ), getString( R.string.import_permission_desc ) );
-                ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, CALENDAR_PERMISSION_REQUEST);
-            } else {
-                ActivityCompat.requestPermissions( this, new String[]{ Manifest.permission.READ_CALENDAR }, CALENDAR_PERMISSION_REQUEST);
-            }
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                    @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case CALENDAR_PERMISSION_REQUEST:
-            {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    loadApp();
-                }
-            }
-        }
-    }
-
-//  private void showExplanation(String title, String message) {
-//      AlertDialog.Builder builder = new AlertDialog.Builder( this );
-//      builder.setTitle(title)
-//              .setMessage(message)
-//              .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//                  public void onClick(DialogInterface dialog, int id) {
-//                      ActivityCompat.requestPermissions(super. , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CALENDAR_PERMISSION_REQUEST);
-//                  }
-//              });
-//      builder.create().show();
-//  }
-
-    private void loadApp() {
-        setContentView(R.layout.activity_main);
         controller.addObserver(store);
         controller.loadSavedState(store);
 
@@ -130,9 +82,48 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Schedule", "Schedule!");
             }
         });
+
+
+        Intent intent = getIntent();
+
+        if ( intent != null && intent.getExtras() != null && intent.getExtras().containsKey( OVERRIDE_EXTRA ) ){
+            //This is a first run explore app override
+        }else {
+            firstRunLogic();
+        }
+
     }
 
-    private void loadNeedPermissions() {
-        setContentView(R.layout.activity_main_need_permissions);
+    private void firstRunLogic(){
+        preferences = PreferenceManager.getDefaultSharedPreferences( this );
+        if ( !preferences.contains( FIRST_TIME_KEY ) ){
+            //Need to ask them to import calendar
+            Intent intent = new Intent( this, ImportCalendarActivity.class );
+            //Cheekily will reuse the first time key
+            intent.putExtra( FIRST_TIME_KEY,  true );
+
+            finish();
+            startActivity( intent );
+
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate( R.menu.main_menu, menu );
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch( item.getItemId() ){
+            case R.id.main_menu_import_calendar:
+                Intent intent = new Intent( MainActivity.this, ImportCalendarActivity.class );
+                startActivity( intent );
+                return true;
+        }
+        return false;
     }
 }
