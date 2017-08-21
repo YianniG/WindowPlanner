@@ -31,28 +31,34 @@ public class Controller extends Observable {
     private static Controller instance = new Controller();
 
     private Calendar            calendar;
-    private List<EventI>        importedEvents;
     private List<EventI>        scheduledEvents;
     private Map<Integer, TaskI> tasks;
+
+    private List<EventI>        importedEvents;
+    private List<Integer>       userCalendars;
+
 
     private static final int IMPORTED_TASK_ID = -1;
 
     private Controller() {
-        this.calendar        = new Calendar();
-        this.importedEvents  = new ArrayList<>();
-        this.scheduledEvents = new ArrayList<>();
-        this.tasks           = new HashMap<>();
+        this.calendar         = new Calendar();
+        this.scheduledEvents  = new ArrayList<>();
+        this.tasks            = new HashMap<>();
+        this.importedEvents   = new ArrayList<>();
+        this.userCalendars    = new ArrayList<>();
     }
 
     public void loadSavedState(Store store) {
         try {
-            List<TaskI> savedTasks = store.readTasks();
+            List<TaskI> savedTasks      = store.readTasks();
+            List<Integer> userCalendars = store.readCalendars();
             Log.i("Controller", "Loading save file");
 
             //Load saved tasks
             for (TaskI task : savedTasks) {
                 tasks.put(task.getId(), task);
             }
+            this.userCalendars = userCalendars;
         } catch (IOException e) {
             // Unable to load saved state
             e.printStackTrace();
@@ -62,6 +68,14 @@ public class Controller extends Observable {
 
     public void importEvent(Date startTime, Date endTime, String title /* Will probably be used*/) {
         this.importedEvents.add(new Event(startTime, endTime, IMPORTED_TASK_ID));
+    }
+
+    public void trackCalendar(int calendarId) {
+        userCalendars.add(calendarId);
+    }
+
+    public void stopTrackingCalendars() {
+        userCalendars.clear();
     }
 
     public void clearEvents() {
@@ -94,6 +108,10 @@ public class Controller extends Observable {
         return new ArrayList<>(this.tasks.values());
     }
 
+    public List<Integer> allCalendars() {
+        return userCalendars;
+    }
+
     public List<EventI> getScheduledEvents() {
         return this.scheduledEvents;
     }
@@ -108,9 +126,9 @@ public class Controller extends Observable {
             calendar.addEvent(event);
         }
 
-        List<EventI> scheduledEvents = new Scheduler().schedule(calendar, allTasks());
+        this.scheduledEvents = new Scheduler().schedule(calendar, allTasks());
         notifyObservers();
-        return scheduledEvents;
+        return this.scheduledEvents;
     }
 
     //Whenever we notifyObservers, a change has occurred
