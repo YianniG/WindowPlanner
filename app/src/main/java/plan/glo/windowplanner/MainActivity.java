@@ -1,44 +1,34 @@
 package plan.glo.windowplanner;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.content.SharedPreferences;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-
-import java.util.List;
-
-import plan.glo.windowplanner.models.EventI;
 import plan.glo.windowplanner.models.Store;
+import plan.glo.windowplanner.util.CustomViewPager;
 
-
-public class MainActivity extends AppCompatActivity {
-
-    private Controller controller = Controller.getInstance();
-    private Store store = new Store(this);
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     public static final String FIRST_TIME_KEY = "first_time_key";
     public static final String OVERRIDE_EXTRA = "override";
 
-    private MaterialCalendarView calendarView;
+    private BottomNavigationView bottomNavigationView;
+    private CustomViewPager viewPager;
     private FloatingActionButton floatingActionButton;
-    private Toolbar toolbar;
+
+    private ScreensAdapter adapter;
 
     private SharedPreferences preferences;
 
@@ -47,33 +37,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar( toolbar );
+        viewPager = ( CustomViewPager ) findViewById( R.id.main_viewpager );
+        adapter = new ScreensAdapter( getSupportFragmentManager() );
 
-        controller.addObserver(store);
-        controller.loadSavedState(store);
-
-        MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_calendarView);
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.main_fab);
-
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        viewPager.setAdapter( adapter );
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent( MainActivity.this, TaskFormActivity.class );
-                startActivity( intent );
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                switch ( position ){
+                    case 0:
+                        viewPager.setPagingEnabled(true);
+                        bottomNavigationView.setSelectedItemId( R.id.main_bottom_dayview );
+                        break;
+                    case 1:
+                        viewPager.setPagingEnabled(true);
+                        bottomNavigationView.setSelectedItemId( R.id.main_bottom_taskview );
+                        break;
+
+                }
             }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
         });
 
-
-        Button scheduleButton = (Button) findViewById(R.id.schedule_button);
-        scheduleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                List<EventI> newEvents = controller.schedule();
-                Log.d("Schedule", "Schedule!");
-            }
-        });
-
+        bottomNavigationView = ( BottomNavigationView ) findViewById( R.id.bottom_navigation );
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         Intent intent = getIntent();
 
@@ -82,6 +74,15 @@ public class MainActivity extends AppCompatActivity {
         }else {
             firstRunLogic();
         }
+
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.main_fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent( MainActivity.this, TaskFormActivity.class );
+                startActivity( intent );
+            }
+        });
 
     }
 
@@ -96,6 +97,43 @@ public class MainActivity extends AppCompatActivity {
             finish();
             startActivity( intent );
 
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.main_bottom_dayview:
+                viewPager.setCurrentItem( 0 );
+                return true;
+            case R.id.main_bottom_taskview:
+                viewPager.setCurrentItem( 1 );
+                return true;
+        }
+        return false;
+    }
+
+    private class ScreensAdapter extends FragmentPagerAdapter {
+
+        public ScreensAdapter(FragmentManager fm) {
+            super(fm);
+        }
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch( position ){
+                case 0:
+                    return DayViewFragment.newInstance();
+                case 1:
+                    return TaskViewFragment.newInstance();
+            }
+            return null;
         }
     }
 
