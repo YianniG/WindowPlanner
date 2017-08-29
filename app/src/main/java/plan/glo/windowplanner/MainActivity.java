@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar( toolbar );
 
         controller.addObserver(store);
-        controller.loadSavedState(store);
+        controller.loadSavedState(store, this);
 
         MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_calendarView);
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.main_fab);

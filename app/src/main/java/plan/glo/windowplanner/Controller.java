@@ -1,5 +1,6 @@
 package plan.glo.windowplanner;
 
+import android.app.Activity;
 import android.util.Log;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Observable;
 
+import plan.glo.windowplanner.models.AndroidEventConverter;
 import plan.glo.windowplanner.models.Calendar;
 import plan.glo.windowplanner.models.Event;
 import plan.glo.windowplanner.models.EventI;
@@ -38,8 +40,6 @@ public class Controller extends Observable {
     private List<Integer>       userCalendars;
 
 
-    private static final int IMPORTED_TASK_ID = -1;
-
     private Controller() {
         this.calendar         = new Calendar();
         this.scheduledEvents  = new ArrayList<>();
@@ -48,7 +48,7 @@ public class Controller extends Observable {
         this.userCalendars    = new ArrayList<>();
     }
 
-    public void loadSavedState(Store store) {
+    public void loadSavedState(Store store, Activity mainActivity) {
         try {
             List<TaskI> savedTasks      = store.readTasks();
             List<Integer> userCalendars = store.readCalendars();
@@ -59,6 +59,9 @@ public class Controller extends Observable {
                 tasks.put(task.getId(), task);
             }
             this.userCalendars = userCalendars;
+
+            //Re-import calendar events
+            this.importedEvents = CalendarController.getEvents(userCalendars, mainActivity);
         } catch (IOException e) {
             // Unable to load saved state
             e.printStackTrace();
@@ -66,21 +69,30 @@ public class Controller extends Observable {
         }
     }
 
-    public void importEvent(Date startTime, Date endTime, String title /* Will probably be used*/) {
-        this.importedEvents.add(new Event(startTime, endTime, IMPORTED_TASK_ID));
+    public void importEvent(EventI event) {
+        this.importedEvents.add(event);
+        notifyObservers();
+    }
+
+    public void clearEvents() {
+        this.importedEvents.clear();
+        notifyObservers();
     }
 
     public void trackCalendar(int calendarId) {
         userCalendars.add(calendarId);
     }
 
+    public List<EventI> getEvents() {
+        return this.importedEvents;
+    }
+
     public void stopTrackingCalendars() {
         userCalendars.clear();
     }
 
-    public void clearEvents() {
-        this.importedEvents.clear();
-        notifyObservers();
+    public List<Integer> getTrackedCalendars() {
+        return userCalendars;
     }
 
     public void addTask(int numberOfJobs, Date start, Date end, String title) {
@@ -122,7 +134,7 @@ public class Controller extends Observable {
 
         calendar = new Calendar();
         //Add the imported events to the calendar
-        for (EventI event : importedEvents) {
+        for (EventI event : getEvents()) {
             calendar.addEvent(event);
         }
 
