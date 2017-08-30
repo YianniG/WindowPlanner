@@ -62,6 +62,9 @@ public class Controller extends Observable {
 
             //Re-import calendar events
             this.importedEvents = CalendarController.getEvents(userCalendars, mainActivity);
+
+            //Schedule tasks to generate task events
+            this.scheduledEvents = schedule();
         } catch (IOException e) {
             // Unable to load saved state
             e.printStackTrace();
