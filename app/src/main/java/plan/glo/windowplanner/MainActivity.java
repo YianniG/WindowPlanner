@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     public static final String FIRST_TIME_KEY = "first_time_key";
     public static final String OVERRIDE_EXTRA = "override";
+    private Store store = new Store(this);
+    private Controller controller = Controller.getInstance();
 
     private BottomNavigationView bottomNavigationView;
     private CustomViewPager viewPager;
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void firstRunLogic(){
+        controller.addObserver(store);
+        controller.loadSavedState(store, this);
         preferences = PreferenceManager.getDefaultSharedPreferences( this );
         if ( !preferences.contains( FIRST_TIME_KEY ) ){
             //Need to ask them to import calendar
